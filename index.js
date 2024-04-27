@@ -44,11 +44,19 @@ const run = async () => {
             res.send(result);
         })
 
-        // get single data from database
-        app.get('/arts/:id', async (req, res) => {
+        // get single data based on id from database
+        app.get('/arts/id/:id', async (req, res) => {
             const art_id = req.params.id;
             const query = { _id: new ObjectId(art_id) }
             const result = await artCollection.findOne(query);
+            res.send(result);
+        })
+
+        // get bulk data based on user email from database
+        app.get('/arts/email/:email', async (req, res) => {
+            console.log(req.params.email);
+            const query = { user_email: req.params.email }
+            const result = await artCollection.find(query).toArray();
             res.send(result);
         })
 
