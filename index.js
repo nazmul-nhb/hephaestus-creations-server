@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import dotenv from 'dotenv';
-import { MongoClient, ServerApiVersion } from 'mongodb';
+import { MongoClient, ObjectId, ServerApiVersion } from 'mongodb';
 
 dotenv.config();
 
@@ -44,6 +44,13 @@ const run = async () => {
             res.send(result);
         })
 
+        // get single data from database
+        app.get('/arts/:id', async (req, res) => {
+            const art_id = req.params.id;
+            const query = { _id: new ObjectId(art_id) }
+            const result = await artCollection.findOne(query);
+            res.send(result);
+        })
 
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
