@@ -30,17 +30,24 @@ const run = async () => {
 
         const artCollection = client.db('artsDB').collection('arts');
 
+        // create single item in database
         app.post('/arts', async (req, res) => {
             console.log(req.body);
             const result = await artCollection.insertOne(req.body);
             res.send(result);
         })
 
+        // get bulk data from database
+        app.get('/arts', async (req, res) => {
+            const cursor = artCollection.find();
+            const result = await cursor.toArray();
+            res.send(result);
+        })
 
 
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
-        console.log("Pinged your deployment. You successfully connected to MongoDB!");
+        console.log("Pinged your deployment. Successfully connected to MongoDB!");
     } finally {
         // Ensures that the client will close when you finish/error
         // await client.close();
