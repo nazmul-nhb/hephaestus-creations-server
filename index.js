@@ -32,7 +32,6 @@ const run = async () => {
 
         // create single item in database
         app.post('/arts', async (req, res) => {
-            console.log(req.body);
             const result = await artCollection.insertOne(req.body);
             res.send(result);
         })
@@ -59,15 +58,18 @@ const run = async () => {
             res.send(result);
         })
 
-        // get bulk data based on customization value from database
-        app.get('/arts/filter/:customizable', async (req, res) => {
-            let customize = req.params.customizable;
-            customize = customize === 'true';
-            // console.log(typeof customize);
-            const query = { customization: customize }
+        // get bulk data based on user email and customization value from database
+        app.get('/arts/filter/:email/:customizable', async (req, res) => {
+            const userEmail = req.params.email;
+            const customizable = req.params.customizable === 'true';
+            const query = {
+                user_email: userEmail,
+                customization: customizable
+            };
             const result = await artCollection.find(query).toArray();
             res.send(result);
-        })
+        });
+
 
         // delete single data based on id from database
         app.delete('/arts/id/:id', async (req, res) => {
@@ -79,13 +81,10 @@ const run = async () => {
 
         // update single data
         app.put('/arts/id/:id', async (req, res) => {
-            // console.log(req.params.id);
             const filter = { _id: new ObjectId(req.params.id) }
             const updatedArt = req.body;
-            // console.log(updatedArt);
             const options = { upsert: true };
             const art = { $set: { ...updatedArt } }
-            console.log(art);
             const result = await artCollection.updateOne(filter, art, options);
             res.send(result)
         })
