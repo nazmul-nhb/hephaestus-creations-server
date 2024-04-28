@@ -54,9 +54,16 @@ const run = async () => {
 
         // get bulk data based on user email from database
         app.get('/arts/email/:email', async (req, res) => {
-            console.log(req.params.email);
             const query = { user_email: req.params.email }
             const result = await artCollection.find(query).toArray();
+            res.send(result);
+        })
+
+        // delete single data based on id from database
+        app.delete('/arts/id/:id', async (req, res) => {
+            const art_id = req.params.id;
+            const query = { _id: new ObjectId(art_id) }
+            const result = await artCollection.deleteOne(query);
             res.send(result);
         })
 
