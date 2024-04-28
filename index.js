@@ -59,6 +59,16 @@ const run = async () => {
             res.send(result);
         })
 
+        // get bulk data based on customization value from database
+        app.get('/arts/filter/:customizable', async (req, res) => {
+            let customize = req.params.customizable;
+            customize = customize === 'true';
+            // console.log(typeof customize);
+            const query = { customization: customize }
+            const result = await artCollection.find(query).toArray();
+            res.send(result);
+        })
+
         // delete single data based on id from database
         app.delete('/arts/id/:id', async (req, res) => {
             const art_id = req.params.id;
