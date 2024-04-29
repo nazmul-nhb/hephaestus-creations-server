@@ -29,6 +29,7 @@ const run = async () => {
         await client.connect();
 
         const artCollection = client.db('artsDB').collection('arts');
+        const categoryCollection = client.db('artsDB').collection('categories');
 
         // create single item in database
         app.post('/arts', async (req, res) => {
@@ -36,14 +37,14 @@ const run = async () => {
             res.send(result);
         })
 
-        // get bulk data from database
+        // get bulk art data from database
         app.get('/arts', async (req, res) => {
             const cursor = artCollection.find();
             const result = await cursor.toArray();
             res.send(result);
         })
 
-        // get single data based on id from database
+        // get single art data based on id from database
         app.get('/arts/id/:id', async (req, res) => {
             const art_id = req.params.id;
             const query = { _id: new ObjectId(art_id) }
@@ -51,7 +52,7 @@ const run = async () => {
             res.send(result);
         })
 
-        // get bulk data based on user email from database
+        // get bulk art data based on user email from database
         app.get('/arts/email/:email', async (req, res) => {
             const query = { user_email: req.params.email }
             const result = await artCollection.find(query).toArray();
@@ -87,6 +88,21 @@ const run = async () => {
             const art = { $set: { ...updatedArt } }
             const result = await artCollection.updateOne(filter, art, options);
             res.send(result)
+        })
+
+        // get categories
+        app.get('/categories', async (req, res) => {
+            const cursor = categoryCollection.find();
+            const result = await cursor.toArray();
+            res.send(result);
+        })
+
+        // get single category
+        app.get('/categories/id/:id', async (req, res) => {
+            const category_id = req.params.id;
+            const query = { _id: new ObjectId(category_id) }
+            const result = await categoryCollection.findOne(query);
+            res.send(result);
         })
 
         // Send a ping to confirm a successful connection
