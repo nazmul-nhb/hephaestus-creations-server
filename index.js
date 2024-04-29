@@ -7,9 +7,10 @@ dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 5000;
+const corsOptions = { origin: ['http://localhost:5173', 'https://hephaestus-creations.web.app'] };
 
 // middlewares
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(express.json());
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.qmbsuxs.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
@@ -34,6 +35,7 @@ const run = async () => {
         // create single item in database
         app.post('/arts', async (req, res) => {
             const result = await artCollection.insertOne(req.body);
+
             res.send(result);
         })
 
@@ -41,6 +43,7 @@ const run = async () => {
         app.get('/arts', async (req, res) => {
             const cursor = artCollection.find();
             const result = await cursor.toArray();
+
             res.send(result);
         })
 
@@ -49,6 +52,7 @@ const run = async () => {
             const art_id = req.params.id;
             const query = { _id: new ObjectId(art_id) }
             const result = await artCollection.findOne(query);
+
             res.send(result);
         })
 
@@ -56,6 +60,7 @@ const run = async () => {
         app.get('/arts/email/:email', async (req, res) => {
             const query = { user_email: req.params.email }
             const result = await artCollection.find(query).toArray();
+
             res.send(result);
         })
 
@@ -63,20 +68,18 @@ const run = async () => {
         app.get('/arts/filter/:email/:customizable', async (req, res) => {
             const userEmail = req.params.email;
             const customizable = req.params.customizable === 'true';
-            const query = {
-                user_email: userEmail,
-                customization: customizable
-            };
+            const query = { user_email: userEmail, customization: customizable };
             const result = await artCollection.find(query).toArray();
+
             res.send(result);
         });
-
 
         // delete single data based on id from database
         app.delete('/arts/id/:id', async (req, res) => {
             const art_id = req.params.id;
             const query = { _id: new ObjectId(art_id) }
             const result = await artCollection.deleteOne(query);
+
             res.send(result);
         })
 
@@ -87,6 +90,7 @@ const run = async () => {
             const options = { upsert: true };
             const art = { $set: { ...updatedArt } }
             const result = await artCollection.updateOne(filter, art, options);
+
             res.send(result)
         })
 
@@ -94,6 +98,7 @@ const run = async () => {
         app.get('/categories', async (req, res) => {
             const cursor = categoryCollection.find();
             const result = await cursor.toArray();
+
             res.send(result);
         })
 
@@ -102,6 +107,7 @@ const run = async () => {
             const category_id = req.params.id;
             const query = { _id: new ObjectId(category_id) }
             const result = await categoryCollection.findOne(query);
+
             res.send(result);
         })
 
@@ -109,6 +115,7 @@ const run = async () => {
         app.get('/arts/category/:category', async (req, res) => {
             const query = { subcategory_name: req.params.category }
             const result = await artCollection.find(query).toArray();
+
             res.send(result);
         })
 
@@ -121,7 +128,6 @@ const run = async () => {
     }
 }
 run().catch(console.dir);
-
 
 app.get("/", async (req, res) => {
     res.send("Art & Craft Server is Running!");
