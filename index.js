@@ -105,6 +105,13 @@ const run = async () => {
             res.send(result);
         })
 
+        // get bulk art data based on category name from database
+        app.get('/arts/category/:category', async (req, res) => {
+            const query = { subcategory_name: req.params.category }
+            const result = await artCollection.find(query).toArray();
+            res.send(result);
+        })
+
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
         console.log("Pinged your deployment. Successfully connected to MongoDB!");
