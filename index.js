@@ -31,6 +31,7 @@ const run = async () => {
 
         const artCollection = client.db('artsDB').collection('arts');
         const categoryCollection = client.db('artsDB').collection('categories');
+        const reviewCollection = client.db('artsDB').collection('reviews');
 
         // create single item in database
         app.post('/arts', async (req, res) => {
@@ -83,7 +84,7 @@ const run = async () => {
             res.send(result);
         })
 
-        // update single data
+        // update single art data
         app.put('/arts/id/:id', async (req, res) => {
             const filter = { _id: new ObjectId(req.params.id) }
             const updatedArt = req.body;
@@ -115,6 +116,14 @@ const run = async () => {
         app.get('/arts/category/:category', async (req, res) => {
             const query = { subcategory_name: req.params.category }
             const result = await artCollection.find(query).toArray();
+
+            res.send(result);
+        })
+
+        // get reviews
+        app.get('/reviews', async (req, res) => {
+            const cursor = reviewCollection.find();
+            const result = await cursor.toArray();
 
             res.send(result);
         })
