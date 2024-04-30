@@ -32,6 +32,7 @@ const run = async () => {
         const artCollection = client.db('artsDB').collection('arts');
         const categoryCollection = client.db('artsDB').collection('categories');
         const reviewCollection = client.db('artsDB').collection('reviews');
+        const partnerCollection = client.db('artsDB').collection('partners');
 
         // create single item in database
         app.post('/arts', async (req, res) => {
@@ -123,6 +124,14 @@ const run = async () => {
         // get reviews
         app.get('/reviews', async (req, res) => {
             const cursor = reviewCollection.find();
+            const result = await cursor.toArray();
+
+            res.send(result);
+        })
+
+        // get partners
+        app.get('/partners', async (req, res) => {
+            const cursor = partnerCollection.find();
             const result = await cursor.toArray();
 
             res.send(result);
